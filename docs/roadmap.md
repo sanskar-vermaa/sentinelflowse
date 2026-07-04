@@ -11,14 +11,13 @@
 
 ## Next Milestones
 
-- Auth and organization onboarding
 - Incident CRUD APIs
-- Alert ingest endpoint
+- Organization-scoped auth dependencies
 - API key authentication
+- Alert ingest endpoint
 - Worker queue integration
 - Workflow execution engine
 - Audit logging
 - Search and filtering
 - Test suite expansion
 - GitHub Actions CI
-
