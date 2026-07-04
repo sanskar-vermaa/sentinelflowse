@@ -9,9 +9,10 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://sentinelflow:sentinelflow@localhost:5432/sentinelflow"
     redis_url: str = "redis://localhost:6379/0"
     jwt_secret: str = "replace-me"
+    access_token_minutes: int = 30
+    refresh_token_days: int = 14
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 settings = Settings()
-
