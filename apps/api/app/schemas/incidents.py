@@ -35,3 +35,14 @@ class IncidentRead(BaseModel):
 class IncidentTransitionResponse(BaseModel):
     incident: IncidentRead
     timeline_event_count: int
+
+
+class IncidentTimelineEventRead(BaseModel):
+    id: UUID
+    incident_id: UUID
+    actor_id: UUID | None
+    event_type: str
+    body: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

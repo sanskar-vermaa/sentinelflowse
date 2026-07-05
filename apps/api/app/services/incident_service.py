@@ -61,6 +61,17 @@ class IncidentService:
             )
         )
 
+    def list_timeline_events(self, organization_id: UUID, incident_id: UUID) -> list[IncidentTimelineEvent]:
+        incident = self.get_incident(organization_id, incident_id)
+        if incident is None:
+            return []
+        statement = (
+            select(IncidentTimelineEvent)
+            .where(IncidentTimelineEvent.incident_id == str(incident_id))
+            .order_by(IncidentTimelineEvent.created_at.asc())
+        )
+        return list(self.db.scalars(statement))
+
     def update_incident(
         self,
         organization_id: UUID,
@@ -109,4 +120,3 @@ class IncidentService:
         )
         self.db.add(event)
         return event
-

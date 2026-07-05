@@ -9,7 +9,7 @@ from app.core.rbac import Permission, has_permission
 from app.db import get_db
 from app.models.incident import IncidentStatus
 from app.models.organization import User
-from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentUpdate
+from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentTimelineEventRead, IncidentUpdate
 from app.services.incident_service import IncidentListFilters, IncidentService
 
 router = APIRouter(prefix="/organizations/{organization_id}/incidents", tags=["incidents"])
@@ -87,3 +87,21 @@ def update_incident(
     if incident is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
     return IncidentRead.model_validate(incident, from_attributes=True)
+
+
+@router.get("/{incident_id}/timeline", response_model=list[IncidentTimelineEventRead])
+def list_incident_timeline(
+    organization_id: UUID,
+    incident_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> list[IncidentTimelineEventRead]:
+    membership = get_membership(db, current_user.id, organization_id)
+    if not has_permission(membership, Permission.incident_read):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident read permission")
+
+    service = IncidentService(db)
+    if service.get_incident(organization_id, incident_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
+    events = service.list_timeline_events(organization_id, incident_id)
+    return [IncidentTimelineEventRead.model_validate(event, from_attributes=True) for event in events]
