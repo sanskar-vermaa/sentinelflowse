@@ -30,3 +30,8 @@ class IncidentRead(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class IncidentTransitionResponse(BaseModel):
+    incident: IncidentRead
+    timeline_event_count: int

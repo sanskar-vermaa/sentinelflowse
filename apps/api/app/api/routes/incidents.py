@@ -9,7 +9,7 @@ from app.core.rbac import Permission, has_permission
 from app.db import get_db
 from app.models.incident import IncidentStatus
 from app.models.organization import User
-from app.schemas.incidents import IncidentCreate, IncidentRead
+from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentUpdate
 from app.services.incident_service import IncidentListFilters, IncidentService
 
 router = APIRouter(prefix="/organizations/{organization_id}/incidents", tags=["incidents"])
@@ -65,3 +65,25 @@ def get_incident(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
     return IncidentRead.model_validate(incident, from_attributes=True)
 
+
+@router.patch("/{incident_id}", response_model=IncidentRead)
+def update_incident(
+    organization_id: UUID,
+    incident_id: UUID,
+    request: IncidentUpdate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> IncidentRead:
+    membership = get_membership(db, current_user.id, organization_id)
+    if not has_permission(membership, Permission.incident_write):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident write permission")
+
+    incident = IncidentService(db).update_incident(
+        organization_id=organization_id,
+        incident_id=incident_id,
+        request=request,
+        actor_id=current_user.id,
+    )
+    if incident is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
+    return IncidentRead.model_validate(incident, from_attributes=True)
