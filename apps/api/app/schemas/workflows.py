@@ -18,3 +18,14 @@ class WorkflowRunRead(BaseModel):
     status: WorkflowRunStatus
     output_payload: dict | None
 
+    model_config = {"from_attributes": True}
+
+
+class WorkflowRead(BaseModel):
+    id: UUID
+    name: str
+    trigger: str
+    definition: dict
+    is_enabled: bool
+
+    model_config = {"from_attributes": True}
