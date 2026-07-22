@@ -1,3 +1,5 @@
+import { AppShell } from "./components/AppShell";
+
 const stats = [
   { label: "Open incidents", value: "18" },
   { label: "Alerts processed", value: "1,284" },
@@ -6,17 +8,7 @@ const stats = [
 
 export default function DashboardPage() {
   return (
-    <main className="shell">
-      <aside className="sidebar">
-        <div className="brand">SentinelFlow</div>
-        <nav className="nav">
-          <a href="/">Overview</a>
-          <a href="/incidents">Incidents</a>
-          <a href="/workflows">Workflows</a>
-          <a href="/settings">Settings</a>
-        </nav>
-      </aside>
-      <section className="content">
+    <AppShell>
         <div className="toolbar">
           <div>
             <h1>Operations overview</h1>
@@ -31,8 +23,6 @@ export default function DashboardPage() {
             </article>
           ))}
         </div>
-      </section>
-    </main>
+    </AppShell>
   );
 }
-

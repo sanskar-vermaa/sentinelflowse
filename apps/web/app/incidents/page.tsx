@@ -1,3 +1,5 @@
+import { AppShell } from "../components/AppShell";
+
 const incidents = [
   { id: "INC-1042", title: "Checkout latency above threshold", severity: "high", owner: "Payments" },
   { id: "INC-1041", title: "CI deploy failed for web", severity: "medium", owner: "Platform" },
@@ -6,17 +8,7 @@ const incidents = [
 
 export default function IncidentsPage() {
   return (
-    <main className="shell">
-      <aside className="sidebar">
-        <div className="brand">SentinelFlow</div>
-        <nav className="nav">
-          <a href="/">Overview</a>
-          <a href="/incidents">Incidents</a>
-          <a href="/workflows">Workflows</a>
-          <a href="/settings">Settings</a>
-        </nav>
-      </aside>
-      <section className="content">
+    <AppShell>
         <div className="toolbar">
           <h1>Incidents</h1>
         </div>
@@ -42,8 +34,6 @@ export default function IncidentsPage() {
             </tbody>
           </table>
         </article>
-      </section>
-    </main>
+    </AppShell>
   );
 }
-
