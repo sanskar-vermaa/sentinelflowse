@@ -24,3 +24,10 @@ tracks incident timelines, and runs automation workflows for response teams.
 The repository is intentionally structured as a production-style monorepo.
 Docker, migrations, tests, and CI are added incrementally as the platform grows.
 
+## Current Capabilities
+
+- FastAPI application shell with health, auth, and incident routes.
+- SQLAlchemy domain models for organizations, alerts, incidents, and workflows.
+- JWT password login foundation with role-based permission helpers.
+- Incident create, list, detail, update, and timeline API contracts.
+- Next.js dashboard shell for operations views.

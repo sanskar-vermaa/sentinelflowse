@@ -19,4 +19,8 @@ Future tasks should be realistic, scoped, and tied to production behavior.
 13. Prevent cross-organization alert grouping by fingerprint.
 14. Fix worker timeout handling for long AI triage requests.
 15. Add integration tests for alert ingest and incident creation.
-
+16. Enforce valid incident status transitions instead of accepting every status patch.
+17. Split assignment permission from generic incident write permission.
+18. Return timeline events with stable ordering when multiple events share the same timestamp.
+19. Add conflict handling when duplicate dedupe keys are created manually.
+20. Prevent timeline reads from leaking incident existence across organizations.
