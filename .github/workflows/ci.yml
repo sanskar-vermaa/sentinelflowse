@@ -18,4 +18,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e apps/api pytest httpx email-validator
       - name: Run API tests
-        run: pytest apps/api/tests
+        working-directory: apps/api
+        run: pytest tests
