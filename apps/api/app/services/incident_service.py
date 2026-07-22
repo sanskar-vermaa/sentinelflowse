@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.models.incident import Incident, IncidentStatus, IncidentTimelineEvent
 from app.schemas.incidents import IncidentCreate, IncidentUpdate
+from app.services.audit_service import AuditService
 
 
 @dataclass(frozen=True)
@@ -37,6 +38,14 @@ class IncidentService:
             actor_id=actor_id,
             event_type="incident.created",
             body=f"Incident created with {request.severity.value} severity.",
+        )
+        AuditService(self.db).record(
+            organization_id=organization_id,
+            actor_id=actor_id,
+            action="incident.created",
+            target_type="incident",
+            target_id=incident.id,
+            metadata={"severity": request.severity.value, "dedupe_key": request.dedupe_key},
         )
         self.db.commit()
         self.db.refresh(incident)
@@ -100,6 +109,14 @@ class IncidentService:
                 actor_id=actor_id,
                 event_type="incident.updated",
                 body="; ".join(changes),
+            )
+            AuditService(self.db).record(
+                organization_id=organization_id,
+                actor_id=actor_id,
+                action="incident.updated",
+                target_type="incident",
+                target_id=incident.id,
+                metadata={"changes": changes},
             )
         self.db.commit()
         self.db.refresh(incident)
