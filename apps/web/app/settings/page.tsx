@@ -16,6 +16,10 @@ export default function SettingsPage() {
       </div>
       <article className="card">
         <h2>API keys</h2>
+        <form className="inline-form">
+          <input placeholder="New key name" />
+          <button type="button">Create key</button>
+        </form>
         <table className="table">
           <thead>
             <tr>
@@ -38,4 +42,3 @@ export default function SettingsPage() {
     </AppShell>
   );
 }
-
