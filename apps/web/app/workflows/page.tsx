@@ -18,7 +18,7 @@ export default function WorkflowsPage() {
       <div className="grid">
         {workflows.map((workflow) => (
           <article className="card" key={workflow.name}>
-            <h2>{workflow.name}</h2>
+            <h2><a href={`/workflows/${encodeURIComponent(workflow.name)}`}>{workflow.name}</a></h2>
             <p>{workflow.trigger}</p>
             <strong>{workflow.status}</strong>
           </article>
@@ -27,4 +27,3 @@ export default function WorkflowsPage() {
     </AppShell>
   );
 }
-
