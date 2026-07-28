@@ -110,6 +110,25 @@ a {
   font-weight: 700;
 }
 
+.detail-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+}
+
+.meta-row {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.timeline-item {
+  border-left: 3px solid var(--accent);
+  padding: 4px 0 4px 12px;
+}
+
 .stat {
   color: var(--muted);
   font-size: 13px;
@@ -230,6 +249,10 @@ a {
   }
 
   .grid-four {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid {
     grid-template-columns: 1fr;
   }
 }
