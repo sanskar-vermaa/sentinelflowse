@@ -14,4 +14,4 @@ htmlcov/
 *.pyc
 *.log
 *.sqlite3
-
+*.egg-info/
