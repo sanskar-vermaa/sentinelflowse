@@ -12,3 +12,5 @@ infra-up:
 infra-down:
 	cd infra && docker compose down
 
+seed:
+	cd apps/api && python -m app.db.seed
