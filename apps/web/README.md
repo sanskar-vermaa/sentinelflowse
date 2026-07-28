@@ -9,6 +9,10 @@ Next.js operator dashboard for SentinelFlow.
 - `/incidents` - incident list
 - `/workflows` - workflow overview
 - `/settings` - API key settings
+- `/alerts` - alert feed
+- `/audit` - organization audit log
+- `/incidents/[id]` - incident detail and timeline
+- `/workflows/[id]` - workflow step detail
 
 ## Run
 
