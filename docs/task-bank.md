@@ -24,3 +24,13 @@ Future tasks should be realistic, scoped, and tied to production behavior.
 18. Return timeline events with stable ordering when multiple events share the same timestamp.
 19. Add conflict handling when duplicate dedupe keys are created manually.
 20. Prevent timeline reads from leaking incident existence across organizations.
+21. Add SQLite-safe UUID handling for demo mode.
+22. Wire dashboard cards to the summary API.
+23. Add Redis-backed worker retry behavior.
+24. Add workflow run history to incident details.
+25. Add API key revocation and audit records.
+26. Add frontend form validation for login.
+27. Add GitHub webhook adapter.
+28. Add Slack notification adapter.
+29. Add incident CSV export.
+30. Add deployment health checks.
