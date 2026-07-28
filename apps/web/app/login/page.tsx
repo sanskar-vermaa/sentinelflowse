@@ -17,8 +17,8 @@ export default function LoginPage() {
           </label>
           <button type="button">Sign in</button>
         </form>
+        <p className="hint">Demo: admin@sentinelflow.dev / sentinelflow-demo</p>
       </section>
     </main>
   );
 }
-

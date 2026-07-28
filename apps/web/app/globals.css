@@ -245,6 +245,12 @@ a {
   padding: 12px;
 }
 
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
 .inline-form {
   display: flex;
   gap: 10px;
