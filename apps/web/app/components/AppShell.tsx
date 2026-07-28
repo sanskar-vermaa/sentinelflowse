@@ -1,7 +1,9 @@
 const navItems = [
   { href: "/", label: "Overview" },
   { href: "/incidents", label: "Incidents" },
+  { href: "/alerts", label: "Alerts" },
   { href: "/workflows", label: "Workflows" },
+  { href: "/audit", label: "Audit" },
   { href: "/settings", label: "Settings" }
 ];
 
@@ -22,4 +24,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </main>
   );
 }
-
