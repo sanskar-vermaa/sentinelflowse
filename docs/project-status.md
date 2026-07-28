@@ -16,6 +16,9 @@ SentinelFlow is complete as a medium-level v1.
 - CI workflow
 - Demo seed data
 - Documentation and task bank
+- Reproducible frontend lockfile
+- Demo scripts for Windows
+- Local SQLite demo mode
 
 ## Future Hardening
 
@@ -25,4 +28,3 @@ SentinelFlow is complete as a medium-level v1.
 - Notification provider integrations
 - Frontend API wiring
 - Deployment manifests
-
