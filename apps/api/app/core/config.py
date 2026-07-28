@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     jwt_secret: str = "replace-me"
     access_token_minutes: int = 30
     refresh_token_days: int = 14
+    ai_provider: str = "deterministic"
+    gemini_api_key: str | None = None
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
