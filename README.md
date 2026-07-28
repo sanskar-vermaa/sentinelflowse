@@ -54,6 +54,13 @@ Seed demo data:
 make seed
 ```
 
+Windows demo scripts:
+
+```powershell
+.\scripts\run_api_demo.ps1
+.\scripts\run_web_demo.ps1
+```
+
 Demo user:
 
 ```txt
