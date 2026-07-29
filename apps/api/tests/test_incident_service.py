@@ -41,7 +41,7 @@ def test_create_incident_adds_timeline_event() -> None:
 
     assert incident.title == "Checkout latency"
     assert incident.status == IncidentStatus.open
-    assert len(db.added) == 2
+    assert len(db.added) == 3
     assert db.commits == 1
 
 
