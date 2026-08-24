@@ -19,6 +19,9 @@ def seed_demo_data() -> None:
             password_hash=hash_password("sentinelflow-demo"),
         )
         organization = Organization(name="SentinelFlow Demo", slug="sentinelflow-demo")
+        db.add_all([user, organization])
+        db.flush()
+
         membership = OrganizationMembership(user=user, organization=organization, role=MemberRole.owner)
         incident = Incident(
             organization_id=str(organization.id),
@@ -34,7 +37,7 @@ def seed_demo_data() -> None:
             trigger="incident.created",
             definition={"steps": [{"type": "notify", "channel": "on-call"}]},
         )
-        db.add_all([user, organization, membership, incident, workflow])
+        db.add_all([membership, incident, workflow])
         db.commit()
     finally:
         db.close()
