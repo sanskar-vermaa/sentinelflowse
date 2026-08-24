@@ -27,6 +27,21 @@ class WorkflowService:
         statement = select(Workflow).where(Workflow.organization_id == str(organization_id)).order_by(Workflow.created_at.desc())
         return list(self.db.scalars(statement))
 
+    def get_workflow(self, organization_id: UUID, workflow_id: UUID) -> Workflow | None:
+        statement = select(Workflow).where(
+            Workflow.id == str(workflow_id),
+            Workflow.organization_id == str(organization_id),
+        )
+        return self.db.scalar(statement)
+
+    def list_runs(self, workflow_id: UUID) -> list[WorkflowRun]:
+        statement = (
+            select(WorkflowRun)
+            .where(WorkflowRun.workflow_id == str(workflow_id))
+            .order_by(WorkflowRun.created_at.desc())
+        )
+        return list(self.db.scalars(statement))
+
     def create_run(self, workflow_id: UUID, incident_id: UUID | None, input_payload: dict) -> WorkflowRun:
         run = WorkflowRun(
             workflow_id=str(workflow_id),

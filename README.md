@@ -74,12 +74,18 @@ sentinelflow-demo
 - SQLAlchemy domain models for organizations, alerts, incidents, and workflows.
 - JWT password login foundation with role-based permission helpers.
 - Incident create, list, detail, update, and timeline API contracts.
-- Alert ingest, API key management, workflows, audit logs, and dashboard summary.
-- Next.js dashboard shell for operations views.
+- Alert ingest, alert listing, API key management, workflows (with run history),
+  audit logs, and dashboard summary.
+- `GET /auth/me` for resolving a logged-in user's organization memberships.
+- Next.js dashboard fully wired to the live API: login, dashboard summary,
+  incidents (list + detail + timeline), alerts, workflows (list + detail + run
+  history), audit log, and API key management all fetch real data instead of
+  placeholder content.
+- Dark, glass-panel UI with subtle 3D card interactions.
 
 ## Completion Scope
 
 This repository is a medium-level v1 of SentinelFlow. It is intentionally sized
 for portfolio use and future task work: the backend has real domain boundaries,
-the frontend has operator-facing pages, and the docs describe the remaining
-production hardening work.
+the frontend is fully wired to the API end-to-end, and the docs describe the
+remaining production hardening work (see `docs/project-status.md`).

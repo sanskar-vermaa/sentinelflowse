@@ -15,4 +15,6 @@ htmlcov/
 *.pyc
 *.log
 *.sqlite3
+*.db
+*.tsbuildinfo
 *.egg-info/

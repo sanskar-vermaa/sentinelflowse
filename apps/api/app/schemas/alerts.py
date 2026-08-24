@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -17,4 +18,16 @@ class AlertIngestResponse(BaseModel):
     accepted: bool
     dedupe_key: str
     incident_id: UUID | None = None
+
+
+class AlertRead(BaseModel):
+    id: UUID
+    source: AlertSource
+    external_id: str
+    title: str
+    fingerprint: str
+    summary: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
 

@@ -19,6 +19,9 @@ SentinelFlow is complete as a medium-level v1.
 - Reproducible frontend lockfile
 - Demo scripts for Windows
 - Local SQLite demo mode
+- Frontend fully wired to the live API (auth, incidents, alerts, workflows,
+  audit log, dashboard, API keys)
+- `GET /auth/me`, alert listing, and workflow detail/run-history endpoints
 
 ## Future Hardening
 
@@ -26,5 +29,4 @@ SentinelFlow is complete as a medium-level v1.
 - Full database integration tests
 - Real queue backend integration
 - Notification provider integrations
-- Frontend API wiring
 - Deployment manifests

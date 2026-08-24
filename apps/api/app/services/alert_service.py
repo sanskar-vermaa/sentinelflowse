@@ -1,6 +1,7 @@
 import hashlib
 from uuid import UUID
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.alert import Alert
@@ -39,6 +40,16 @@ class AlertService:
             actor_id=None,
         )
         return AlertIngestResponse(alert_id=alert.id, accepted=True, dedupe_key=dedupe_key, incident_id=incident.id)
+
+    def list_alerts(self, organization_id: UUID, limit: int = 50, offset: int = 0) -> list[Alert]:
+        statement = (
+            select(Alert)
+            .where(Alert.organization_id == str(organization_id))
+            .order_by(Alert.created_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
+        return list(self.db.scalars(statement))
 
     @staticmethod
     def _build_dedupe_key(request: AlertIngestRequest) -> str:
