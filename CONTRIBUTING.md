@@ -17,5 +17,6 @@ Use conventional commit prefixes:
 - Keep organization scoping explicit.
 - Add tests when changing incident, alert, auth, or workflow behavior.
 - Prefer deterministic rule logic before using AI triage.
-- Document new Silver task candidates in `docs/task-bank.md`.
+- Add an Alembic migration (`alembic revision --autogenerate`) with every model change; CI runs `alembic check`.
+- Run `make lint test` before opening a pull request.
 

@@ -1,12 +1,13 @@
 # Worker
 
-The worker is responsible for asynchronous response work:
+`apps/worker` executes queued workflow runs.
 
-- alert batch processing
-- deduplication
-- AI triage enrichment
-- workflow execution
-- notification retries
+```bash
+pip install -e apps/api -e apps/worker
+DATABASE_URL=... python -m sentinelflow_worker
+```
 
-The v1 worker has a bootstrap job structure. It is intentionally small, but the
-module boundaries are ready for Redis-backed queue integration.
+- Polls every `WORKER_POLL_SECONDS` (default 2) and claims up to `WORKER_BATCH_SIZE` (default 20) runs; drains back-to-back while the queue is full.
+- On PostgreSQL runs are claimed with `SELECT ... FOR UPDATE SKIP LOCKED`, so several workers can run concurrently without double execution.
+- A failing step marks the run `failed` with the error in `output_payload`; a database error in one tick is logged and retried on the next.
+- Stops cleanly on `SIGTERM`/`SIGINT`.

@@ -11,21 +11,22 @@ assignee, and timeline events.
 - `GET /api/v1/organizations/{organization_id}/incidents/{incident_id}`
 - `PATCH /api/v1/organizations/{organization_id}/incidents/{incident_id}`
 - `GET /api/v1/organizations/{organization_id}/incidents/{incident_id}/timeline`
+- `GET /api/v1/organizations/{organization_id}/incidents/{incident_id}/alerts`
+- `POST /api/v1/organizations/{organization_id}/incidents/{incident_id}/triage`
 
 ## Status Flow
 
-The first stable flow is intentionally simple:
+Statuses:
 
 ```txt
 open -> acknowledged -> mitigated -> resolved -> archived
 ```
 
-Future commits will enforce transition rules. For now, status changes are
-recorded as timeline events so behavior is visible and testable.
+Every change to status, severity or assignee is recorded on the timeline and in the audit log, and queues `incident.updated` (and `incident.resolved`) workflows. Assignees must be members of the organization.
 
 ## Permission Model
 
 - `incident:read` is required for list, detail, and timeline.
 - `incident:write` is required for create and update.
-- `incident:assign` will be enforced when dedicated assignment APIs are added.
+- Viewers can read but not change incidents or request triage.
 

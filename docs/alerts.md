@@ -1,12 +1,6 @@
-# Alert Ingestion
+# Alert ingestion and deduplication
 
-SentinelFlow accepts external alerts through `POST /api/v1/alerts/ingest`.
-
-## Authentication
-
-Send an organization API key in the `X-API-Key` header.
-
-## Example Payload
+Monitoring tools, CI and webhooks send alerts to `POST /api/v1/alerts/ingest` with an organization API key in `X-API-Key`.
 
 ```json
 {
@@ -22,5 +16,17 @@ Send an organization API key in the `X-API-Key` header.
 }
 ```
 
-The API stores the raw alert, builds a deterministic dedupe key, and creates an
-incident for response tracking.
+`source` is one of `monitor`, `github`, `ci`, `webhook`. `payload` is free-form; `service`, `environment`, `severity` and `summary` are used when present.
+
+## What happens
+
+1. **Idempotency:** if this organization already received the same `source` + `external_id`, the original alert is returned with `duplicate_delivery: true`. Webhook retries never create duplicates.
+2. **Dedupe key:** a hash of source, service, environment and normalised title.
+3. **Grouping:** if an open (not resolved or archived) incident has the same key, the alert is attached to it, an `alert.grouped` timeline entry is added, and the incident's severity is raised if the new alert is more severe (it is never lowered). Response: `deduplicated: true`.
+4. **New incident:** otherwise a new incident opens with the alert's severity (default `medium`), and `incident.created` workflows are queued.
+
+Resolved incidents don't absorb alerts, so a recurrence after resolution opens a fresh incident.
+
+## API keys
+
+Keys look like `sf_<43 random characters>`, are shown once at creation, and are stored as bcrypt hashes with a 12-character lookup prefix. A key only ever writes into its own organization.

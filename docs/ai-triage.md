@@ -1,21 +1,14 @@
-# AI Triage
+# AI triage
 
-SentinelFlow includes an AI-ready triage service. The default provider is
-deterministic so the project runs without paid API keys.
+`POST /api/v1/organizations/{org}/incidents/{id}/triage` returns a short summary and recommended next steps, and records them on the incident timeline as `ai.triage`. The dashboard's **AI triage** button calls it.
 
-## Local Gemini Configuration
+## Providers
 
-Add this to your local `.env` file only:
+| `AI_PROVIDER` | Behaviour |
+| --- | --- |
+| `deterministic` (default) | Severity-based playbook; no external calls, always available |
+| `gemini` | Sends the incident title, severity, status, description, grouped alert sources and the last 10 timeline entries to Gemini (`GEMINI_MODEL`, default `gemini-2.5-flash`) and asks for JSON |
 
-```txt
-AI_PROVIDER=gemini
-GEMINI_API_KEY=your-local-key
-```
+With Gemini, any failure (network, quota, malformed output) falls back to the playbook, so the endpoint never errors because of the model. Production refuses to start with `AI_PROVIDER=gemini` and no `GEMINI_API_KEY`.
 
-Never commit API keys. If a key is pasted into chat or public history, revoke it
-and create a new one.
-
-## Current Scope
-
-The v1 project exposes provider boundaries and safe configuration. A production
-Gemini HTTP adapter can be added later without changing incident or alert APIs.
+The incident data is labelled as data, not instructions, in the prompt. Output is advisory: it is stored on the timeline and never changes incident state by itself.
