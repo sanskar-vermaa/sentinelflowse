@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 INSECURE_JWT_SECRETS = {"", "replace-me", "change-me", "secret"}
@@ -26,6 +27,15 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.5-flash"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @field_validator("database_url")
+    @classmethod
+    def use_psycopg_driver(cls, value: str) -> str:
+        # Hosting platforms hand out postgres:// or postgresql:// URLs; the API uses psycopg 3.
+        for prefix in ("postgres://", "postgresql://"):
+            if value.startswith(prefix):
+                return "postgresql+psycopg://" + value[len(prefix) :]
+        return value
 
     @property
     def environment(self) -> str:

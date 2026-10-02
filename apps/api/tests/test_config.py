@@ -61,3 +61,9 @@ def test_stored_bcrypt_hashes_still_verify():
     stored = "$2b$12$.fbk1mHTe17GnBgkOMaxRubhcbh2R1R9X4Mwzig3qapmmp4JSR7Z2"
     assert verify_password("sentinelflow-demo", stored)
     assert not verify_password("sentinelflow-dem0", stored)
+
+
+def test_platform_postgres_urls_use_psycopg():
+    for raw in ("postgres://u:p@h:5432/db", "postgresql://u:p@h/db"):
+        assert Settings(database_url=raw).database_url.startswith("postgresql+psycopg://u:p@h")
+    assert Settings(database_url="sqlite:///./x.db").database_url == "sqlite:///./x.db"
