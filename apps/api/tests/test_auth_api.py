@@ -33,11 +33,13 @@ def test_duplicate_email_is_a_conflict(client, owner):
 
 
 def test_same_org_name_gets_a_unique_slug(register, session_factory):
+    from uuid import UUID
+
     from app.models.organization import Organization
 
     a, b = register(org="Same Name"), register(org="Same Name")
-    db = session_factory()
-    slugs = {db.get(Organization, __import__("uuid").UUID(x.org_id)).slug for x in (a, b)}
+    with session_factory() as db:
+        slugs = {db.get(Organization, UUID(x.org_id)).slug for x in (a, b)}
     assert slugs == {"same-name", "same-name-2"}
 
 

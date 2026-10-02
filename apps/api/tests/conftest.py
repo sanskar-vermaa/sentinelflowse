@@ -13,7 +13,7 @@ os.environ.setdefault("JWT_SECRET", "test-secret-key-that-is-long-enough-for-hs2
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import close_all_sessions, sessionmaker
 
 from app import models  # noqa: F401
 from app.api.routes.auth import login_limiter
@@ -33,6 +33,9 @@ def engine(tmp_path):
     Base.metadata.drop_all(eng)
     Base.metadata.create_all(eng)
     yield eng
+    # Sessions opened directly by tests still hold locks on Postgres, which
+    # would block DROP TABLE forever.
+    close_all_sessions()
     Base.metadata.drop_all(eng)
     eng.dispose()
 
