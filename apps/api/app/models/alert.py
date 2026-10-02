@@ -23,4 +23,6 @@ class Alert(UUIDMixin, TimestampMixin, Base):
     fingerprint: Mapped[str] = mapped_column(String(128), index=True)
     payload: Mapped[dict] = mapped_column(JSON)
     summary: Mapped[str | None] = mapped_column(Text)
+    # The incident this alert was grouped into.
+    incident_id: Mapped[str | None] = mapped_column(ForeignKey("incidents.id", ondelete="SET NULL"), index=True)
 
