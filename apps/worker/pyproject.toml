@@ -8,3 +8,10 @@ dependencies = ["sentinelflow-api"]
 [tool.pytest.ini_options]
 pythonpath = [".", "../api"]
 testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["sentinelflow_worker*"]
