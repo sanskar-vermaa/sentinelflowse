@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /web
 ENV NEXT_TELEMETRY_DISABLED=1
 # Public API URL the browser calls; baked into the client bundle.
@@ -10,7 +10,7 @@ RUN npm ci --no-audit --no-fund
 COPY apps/web ./
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:26-alpine
 WORKDIR /web
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 COPY --from=build --chown=node:node /web/.next/standalone ./
