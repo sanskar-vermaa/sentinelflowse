@@ -1,6 +1,15 @@
 from fastapi import APIRouter
 
-from app.api.routes import alerts, api_keys, audit, auth, dashboard, health, incidents, workflows
+from app.api.routes import (
+    alerts,
+    api_keys,
+    audit,
+    auth,
+    dashboard,
+    health,
+    incidents,
+    workflows,
+)
 
 api_router = APIRouter()
 api_router.include_router(auth.router)

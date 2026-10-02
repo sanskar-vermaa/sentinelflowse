@@ -7,8 +7,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.security import DUMMY_PASSWORD_HASH, create_token, decode_token, hash_password, verify_password
-from app.models.organization import MemberRole, Organization, OrganizationMembership, User
+from app.core.security import (
+    DUMMY_PASSWORD_HASH,
+    create_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
+from app.models.organization import (
+    MemberRole,
+    Organization,
+    OrganizationMembership,
+    User,
+)
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse
 
 

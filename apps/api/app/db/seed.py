@@ -2,7 +2,12 @@ from app.core.security import hash_password
 from app.db.init_db import create_all_tables
 from app.db.session import SessionLocal
 from app.models.incident import Incident, IncidentSeverity, IncidentStatus
-from app.models.organization import MemberRole, Organization, OrganizationMembership, User
+from app.models.organization import (
+    MemberRole,
+    Organization,
+    OrganizationMembership,
+    User,
+)
 from app.models.workflow import Workflow
 
 
