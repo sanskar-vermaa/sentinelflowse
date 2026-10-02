@@ -10,7 +10,13 @@ from app.db import get_db
 from app.models.incident import IncidentStatus
 from app.models.organization import User
 from app.schemas.alerts import AlertRead
-from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentTimelineEventRead, IncidentUpdate, TriageRead
+from app.schemas.incidents import (
+    IncidentCreate,
+    IncidentRead,
+    IncidentTimelineEventRead,
+    IncidentUpdate,
+    TriageRead,
+)
 from app.services.alert_service import AlertService
 from app.services.incident_service import IncidentListFilters, IncidentService
 from app.services.triage_service import TriageRequest, TriageService
@@ -80,6 +86,10 @@ def update_incident(
     membership = get_membership(db, current_user.id, organization_id)
     if not has_permission(membership, Permission.incident_write):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident write permission")
+    if request.assignee_id is not None and get_membership(db, request.assignee_id, organization_id) is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Assignee is not a member of this organization"
+        )
 
     incident = IncidentService(db).update_incident(
         organization_id=organization_id,
