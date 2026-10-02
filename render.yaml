@@ -1,0 +1,44 @@
+# Render Blueprint: Dashboard -> New -> Blueprint -> pick this repository.
+# Creates Postgres, the API (runs migrations on start), the worker and the dashboard.
+databases:
+  - name: sentinelflow-db
+    plan: free
+    databaseName: sentinelflow
+    user: sentinelflow
+
+services:
+  - type: web
+    name: sentinelflow-api
+    runtime: docker
+    dockerfilePath: infra/docker/api.Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/v1/health/ready
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sentinelflow-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEB_ORIGIN
+        sync: false            # the dashboard URL, e.g. https://sentinelflow-web.onrender.com
+      # Free plans have no background workers; run workflows inside the API.
+      - key: WORKFLOW_EXECUTION
+        value: inline
+      - key: AI_PROVIDER
+        value: deterministic
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: sentinelflow-web
+    runtime: docker
+    dockerfilePath: infra/docker/web.Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false            # the API URL + /api/v1
