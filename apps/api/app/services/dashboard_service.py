@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.alert import Alert
 from app.models.incident import Incident, IncidentStatus
-from app.models.workflow import WorkflowRun
+from app.models.workflow import Workflow, WorkflowRun
 
 
 class DashboardService:
@@ -22,7 +22,13 @@ class DashboardService:
         alerts = self.db.scalar(
             select(func.count()).select_from(Alert).where(Alert.organization_id == str(organization_id))
         )
-        workflow_runs = self.db.scalar(select(func.count()).select_from(WorkflowRun))
+        # Runs belong to an organization through their workflow.
+        workflow_runs = self.db.scalar(
+            select(func.count())
+            .select_from(WorkflowRun)
+            .join(Workflow, Workflow.id == WorkflowRun.workflow_id)
+            .where(Workflow.organization_id == str(organization_id))
+        )
         return {
             "open_incidents": int(open_incidents or 0),
             "alerts_processed": int(alerts or 0),
