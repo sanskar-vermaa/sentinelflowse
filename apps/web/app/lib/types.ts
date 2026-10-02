@@ -31,7 +31,14 @@ export type Alert = {
   title: string;
   fingerprint: string;
   summary: string | null;
+  incident_id?: string | null;
   created_at: string;
+};
+
+export type Triage = {
+  provider: string;
+  summary: string;
+  recommended_actions: string[];
 };
 
 export type Workflow = {
