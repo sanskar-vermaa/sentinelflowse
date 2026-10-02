@@ -26,6 +26,9 @@ class FakeSession:
     def refresh(self, value) -> None:
         self.refreshed.append(value)
 
+    def scalars(self, statement):
+        return []  # no workflows configured
+
 
 def test_create_incident_adds_timeline_event() -> None:
     db = FakeSession()

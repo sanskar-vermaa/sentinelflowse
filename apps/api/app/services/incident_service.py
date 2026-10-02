@@ -4,9 +4,11 @@ from uuid import UUID
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.models.incident import Incident, IncidentStatus, IncidentTimelineEvent
 from app.schemas.incidents import IncidentCreate, IncidentUpdate
 from app.services.audit_service import AuditService
+from app.services.workflow_engine import WorkflowEngine
 
 
 @dataclass(frozen=True)
@@ -47,9 +49,17 @@ class IncidentService:
             target_id=incident.id,
             metadata={"severity": request.severity.value, "dedupe_key": request.dedupe_key},
         )
+        runs = WorkflowEngine(self.db).enqueue_for_event(organization_id, "incident.created", incident)
         self.db.commit()
+        self._run_inline(runs)
         self.db.refresh(incident)
         return incident
+
+    def _run_inline(self, runs) -> None:
+        if runs and settings.workflow_execution == "inline":
+            engine = WorkflowEngine(self.db)
+            for run in runs:
+                engine.execute(run)
 
     def list_incidents(self, filters: IncidentListFilters) -> list[Incident]:
         statement: Select[tuple[Incident]] = select(Incident).where(
@@ -93,7 +103,9 @@ class IncidentService:
             return None
 
         changes: list[str] = []
+        resolved = False
         if request.status is not None and request.status != incident.status:
+            resolved = request.status == IncidentStatus.resolved
             changes.append(f"status changed from {incident.status.value} to {request.status.value}")
             incident.status = request.status
         if request.severity is not None and request.severity != incident.severity:
@@ -118,7 +130,14 @@ class IncidentService:
                 target_id=incident.id,
                 metadata={"changes": changes},
             )
+        runs = []
+        if changes:
+            engine = WorkflowEngine(self.db)
+            runs = engine.enqueue_for_event(organization_id, "incident.updated", incident)
+            if resolved:
+                runs += engine.enqueue_for_event(organization_id, "incident.resolved", incident)
         self.db.commit()
+        self._run_inline(runs)
         self.db.refresh(incident)
         return incident
 

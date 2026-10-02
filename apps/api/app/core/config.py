@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # Comma-separated list of browser origins allowed to call the API.
     web_origin: str = "http://localhost:3000"
     login_rate_limit: int = 10  # failed logins per email+IP per 15 minutes
+    # "worker": the worker process executes queued workflow runs.
+    # "inline": the API runs them right after the triggering request (single-service deploys).
+    workflow_execution: str = "worker"
     ai_provider: str = "deterministic"
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-2.5-flash"
