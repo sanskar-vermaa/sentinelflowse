@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -11,12 +12,22 @@ class WorkflowCreate(BaseModel):
     definition: dict
 
 
+class WorkflowUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=2, max_length=160)
+    is_enabled: bool | None = None
+
+
+class WorkflowRunCreate(BaseModel):
+    incident_id: UUID | None = None
+
+
 class WorkflowRunRead(BaseModel):
     id: UUID
     workflow_id: UUID
     incident_id: UUID | None
     status: WorkflowRunStatus
     output_payload: dict | None
+    created_at: datetime
 
     model_config = {"from_attributes": True}
 
