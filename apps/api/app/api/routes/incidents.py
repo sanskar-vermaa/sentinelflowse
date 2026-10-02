@@ -9,8 +9,11 @@ from app.core.rbac import Permission, has_permission
 from app.db import get_db
 from app.models.incident import IncidentStatus
 from app.models.organization import User
-from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentTimelineEventRead, IncidentUpdate
+from app.schemas.alerts import AlertRead
+from app.schemas.incidents import IncidentCreate, IncidentRead, IncidentTimelineEventRead, IncidentUpdate, TriageRead
+from app.services.alert_service import AlertService
 from app.services.incident_service import IncidentListFilters, IncidentService
+from app.services.triage_service import TriageRequest, TriageService
 
 router = APIRouter(prefix="/organizations/{organization_id}/incidents", tags=["incidents"])
 
@@ -105,3 +108,57 @@ def list_incident_timeline(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
     events = service.list_timeline_events(organization_id, incident_id)
     return [IncidentTimelineEventRead.model_validate(event, from_attributes=True) for event in events]
+
+
+@router.get("/{incident_id}/alerts", response_model=list[AlertRead])
+def list_incident_alerts(
+    organization_id: UUID,
+    incident_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> list[AlertRead]:
+    membership = get_membership(db, current_user.id, organization_id)
+    if not has_permission(membership, Permission.incident_read):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident read permission")
+    if IncidentService(db).get_incident(organization_id, incident_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
+    alerts = AlertService(db).list_incident_alerts(organization_id, incident_id)
+    return [AlertRead.model_validate(alert, from_attributes=True) for alert in alerts]
+
+
+@router.post("/{incident_id}/triage", response_model=TriageRead)
+def triage_incident(
+    organization_id: UUID,
+    incident_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> TriageRead:
+    """Ask the AI (or the built-in playbook) for a summary and next steps.
+
+    The suggestion is also recorded on the incident timeline.
+    """
+    membership = get_membership(db, current_user.id, organization_id)
+    if not has_permission(membership, Permission.incident_write):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident write permission")
+
+    incidents = IncidentService(db)
+    incident = incidents.get_incident(organization_id, incident_id)
+    if incident is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
+
+    alerts = AlertService(db).list_incident_alerts(organization_id, incident_id)
+    events = incidents.list_timeline_events(organization_id, incident_id)
+    result = TriageService().suggest(
+        TriageRequest(
+            title=incident.title,
+            severity=incident.severity.value,
+            summary=incident.description,
+            status=incident.status.value,
+            alert_sources=[f"{a.source.value}:{a.external_id}" for a in alerts],
+            timeline=[f"{e.event_type}: {e.body}" for e in events],
+        )
+    )
+    body = result.summary + "\n" + "\n".join(f"- {action}" for action in result.recommended_actions)
+    incidents.add_timeline_event(incident_id=incident.id, actor_id=current_user.id, event_type="ai.triage", body=body)
+    db.commit()
+    return TriageRead(provider=result.provider, summary=result.summary, recommended_actions=result.recommended_actions)

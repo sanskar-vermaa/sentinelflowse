@@ -46,3 +46,9 @@ class IncidentTimelineEventRead(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class TriageRead(BaseModel):
+    provider: str
+    summary: str
+    recommended_actions: list[str]
