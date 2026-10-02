@@ -24,7 +24,7 @@ export default function LoginPage() {
       if (!membership) {
         throw new Error("Your account is not a member of any organization yet.");
       }
-      saveSession(token.access_token, membership, me.display_name);
+      saveSession(token.access_token, token.refresh_token, membership, me.display_name);
       router.push("/");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Unable to sign in. Check the API is running.");
