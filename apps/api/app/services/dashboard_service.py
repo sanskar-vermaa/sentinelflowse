@@ -14,7 +14,9 @@ class DashboardService:
 
     def organization_summary(self, organization_id: UUID) -> dict[str, int]:
         open_incidents = self.db.scalar(
-            select(func.count()).select_from(Incident).where(
+            select(func.count())
+            .select_from(Incident)
+            .where(
                 Incident.organization_id == str(organization_id),
                 Incident.status.in_([IncidentStatus.open, IncidentStatus.acknowledged]),
             )
@@ -34,4 +36,3 @@ class DashboardService:
             "alerts_processed": int(alerts or 0),
             "workflow_runs": int(workflow_runs or 0),
         }
-

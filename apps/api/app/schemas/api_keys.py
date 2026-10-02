@@ -22,4 +22,3 @@ class ApiKeyRead(BaseModel):
 class ApiKeyCreateResponse(BaseModel):
     api_key: ApiKeyRead
     secret: str
-

@@ -15,4 +15,3 @@ class ApiKey(UUIDMixin, TimestampMixin, Base):
     key_hash: Mapped[str] = mapped_column(String(255))
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-

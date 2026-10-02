@@ -60,4 +60,3 @@ class GUID(TypeDecorator):
 
 class UUIDMixin:
     id: Mapped[UUID] = mapped_column(GUID(), primary_key=True, default=uuid4)
-

@@ -40,4 +40,3 @@ class IncidentTimelineEvent(UUIDMixin, TimestampMixin, Base):
     actor_id: Mapped[str | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
     event_type: Mapped[str] = mapped_column(String(80), index=True)
     body: Mapped[str] = mapped_column(Text)
-

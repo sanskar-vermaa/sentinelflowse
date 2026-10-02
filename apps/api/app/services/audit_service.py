@@ -28,4 +28,3 @@ class AuditService:
         )
         self.db.add(log)
         return log
-

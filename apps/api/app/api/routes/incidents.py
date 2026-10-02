@@ -87,9 +87,7 @@ def update_incident(
     if not has_permission(membership, Permission.incident_write):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing incident write permission")
     if request.assignee_id is not None and get_membership(db, request.assignee_id, organization_id) is None:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Assignee is not a member of this organization"
-        )
+        raise HTTPException(status_code=422, detail="Assignee is not a member of this organization")
 
     incident = IncidentService(db).update_incident(
         organization_id=organization_id,

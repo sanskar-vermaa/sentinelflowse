@@ -43,7 +43,9 @@ class AuthService:
         if self.db.scalar(select(User.id).where(User.email == email)) is not None:
             raise EmailAlreadyRegistered(email)
 
-        user = User(email=email, display_name=request.display_name.strip(), password_hash=hash_password(request.password))
+        user = User(
+            email=email, display_name=request.display_name.strip(), password_hash=hash_password(request.password)
+        )
         organization = Organization(
             name=request.organization_name.strip(),
             slug=self._unique_slug(request.organization_name),

@@ -33,4 +33,3 @@ def list_audit_logs(
         .limit(limit)
     )
     return [AuditLogRead.model_validate(log, from_attributes=True) for log in db.scalars(statement)]
-

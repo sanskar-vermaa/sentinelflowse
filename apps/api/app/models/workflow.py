@@ -32,4 +32,3 @@ class WorkflowRun(UUIDMixin, TimestampMixin, Base):
     status: Mapped[WorkflowRunStatus] = mapped_column(Enum(WorkflowRunStatus), default=WorkflowRunStatus.queued)
     input_payload: Mapped[dict] = mapped_column(JSON)
     output_payload: Mapped[dict | None] = mapped_column(JSON)
-

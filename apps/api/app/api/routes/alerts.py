@@ -46,4 +46,3 @@ def ingest_alert(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
 
     return AlertService(db).ingest(api_key.organization_id, request)
-

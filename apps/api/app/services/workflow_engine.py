@@ -31,7 +31,9 @@ logger = logging.getLogger(__name__)
 
 TRIGGERS = ("incident.created", "incident.updated", "incident.resolved", "manual")
 STEP_TYPES = ("notify", "timeline", "escalate")
-SEVERITY_ORDER = [s.value for s in (IncidentSeverity.low, IncidentSeverity.medium, IncidentSeverity.high, IncidentSeverity.critical)]
+SEVERITY_ORDER = [
+    s.value for s in (IncidentSeverity.low, IncidentSeverity.medium, IncidentSeverity.high, IncidentSeverity.critical)
+]
 MAX_STEPS = 20
 
 
@@ -140,7 +142,9 @@ class WorkflowEngine:
                         raise RuntimeError("escalate needs an incident")
                     target = step["severity"]
                     if SEVERITY_ORDER.index(target) > SEVERITY_ORDER.index(incident.severity.value):
-                        message = f"Workflow '{workflow.name}' raised severity from {incident.severity.value} to {target}."
+                        message = (
+                            f"Workflow '{workflow.name}' raised severity from {incident.severity.value} to {target}."
+                        )
                         incident.severity = IncidentSeverity(target)
                     else:
                         message = f"Workflow '{workflow.name}' left severity at {incident.severity.value}."

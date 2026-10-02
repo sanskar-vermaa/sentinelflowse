@@ -82,9 +82,7 @@ class AlertService:
             )
             alert.incident_id = str(incident.id)
             self.db.commit()
-            return AlertIngestResponse(
-                alert_id=alert.id, accepted=True, dedupe_key=dedupe_key, incident_id=incident.id
-            )
+            return AlertIngestResponse(alert_id=alert.id, accepted=True, dedupe_key=dedupe_key, incident_id=incident.id)
 
         # Group the alert into the open incident instead of opening a new one.
         alert.incident_id = str(open_incident.id)
@@ -95,9 +93,7 @@ class AlertService:
             note += f" Severity raised from {open_incident.severity.value} to {severity.value}."
             open_incident.severity = severity
         open_incident.updated_at = utcnow()
-        incidents.add_timeline_event(
-            incident_id=open_incident.id, actor_id=None, event_type="alert.grouped", body=note
-        )
+        incidents.add_timeline_event(incident_id=open_incident.id, actor_id=None, event_type="alert.grouped", body=note)
         AuditService(self.db).record(
             organization_id=organization_id,
             actor_id=None,

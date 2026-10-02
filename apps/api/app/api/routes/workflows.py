@@ -53,7 +53,7 @@ def create_workflow(
     try:
         validate_definition(request.trigger, request.definition)
     except InvalidDefinition as exc:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from None
+        raise HTTPException(status_code=422, detail=str(exc)) from None
     workflow = WorkflowService(db).create_workflow(organization_id, request)
     return WorkflowRead.model_validate(workflow, from_attributes=True)
 
@@ -89,7 +89,6 @@ def list_workflow_runs(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Workflow not found")
     runs = service.list_runs(workflow_id)
     return [WorkflowRunRead.model_validate(run, from_attributes=True) for run in runs]
-
 
 
 @router.patch("/{workflow_id}", response_model=WorkflowRead)
@@ -130,7 +129,10 @@ def run_workflow(
     service = WorkflowService(db)
     if service.get_workflow(organization_id, workflow_id) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Workflow not found")
-    if request.incident_id is not None and IncidentService(db).get_incident(organization_id, request.incident_id) is None:
+    if (
+        request.incident_id is not None
+        and IncidentService(db).get_incident(organization_id, request.incident_id) is None
+    ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
 
     run = service.create_run(workflow_id, request.incident_id, {"event": "manual", "actor_id": str(current_user.id)})

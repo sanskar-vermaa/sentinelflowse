@@ -25,4 +25,3 @@ class Alert(UUIDMixin, TimestampMixin, Base):
     summary: Mapped[str | None] = mapped_column(Text)
     # The incident this alert was grouped into.
     incident_id: Mapped[str | None] = mapped_column(ForeignKey("incidents.id", ondelete="SET NULL"), index=True)
-

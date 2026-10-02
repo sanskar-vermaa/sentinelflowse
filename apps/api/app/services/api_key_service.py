@@ -39,4 +39,3 @@ class ApiKeyService:
             if verify_password(secret, candidate.key_hash):
                 return candidate
         return None
-

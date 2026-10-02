@@ -69,4 +69,3 @@ def test_update_incident_without_changes_still_returns_incident(monkeypatch) -> 
     assert updated is existing
     assert db.commits == 1
     assert db.added == []
-

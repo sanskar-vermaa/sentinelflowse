@@ -37,4 +37,3 @@ def has_permission(membership: OrganizationMembership | None, permission: Permis
 def require_permission(membership: OrganizationMembership | None, permission: Permission) -> None:
     if not has_permission(membership, permission):
         raise PermissionError(f"Missing permission: {permission.value}")
-

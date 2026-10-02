@@ -24,7 +24,11 @@ class WorkflowService:
         return workflow
 
     def list_workflows(self, organization_id: UUID) -> list[Workflow]:
-        statement = select(Workflow).where(Workflow.organization_id == str(organization_id)).order_by(Workflow.created_at.desc())
+        statement = (
+            select(Workflow)
+            .where(Workflow.organization_id == str(organization_id))
+            .order_by(Workflow.created_at.desc())
+        )
         return list(self.db.scalars(statement))
 
     def get_workflow(self, organization_id: UUID, workflow_id: UUID) -> Workflow | None:
@@ -53,4 +57,3 @@ class WorkflowService:
         self.db.commit()
         self.db.refresh(run)
         return run
-

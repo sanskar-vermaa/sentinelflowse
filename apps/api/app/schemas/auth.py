@@ -45,4 +45,3 @@ class MeResponse(BaseModel):
     email: str
     display_name: str
     memberships: list[MembershipRead]
-

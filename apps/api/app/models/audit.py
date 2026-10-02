@@ -13,4 +13,3 @@ class AuditLog(UUIDMixin, TimestampMixin, Base):
     target_type: Mapped[str] = mapped_column(String(80), index=True)
     target_id: Mapped[str | None] = mapped_column(String(80), index=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
-

@@ -44,4 +44,3 @@ def create_api_key(
         api_key=ApiKeyRead.model_validate(created.record, from_attributes=True),
         secret=created.secret,
     )
-

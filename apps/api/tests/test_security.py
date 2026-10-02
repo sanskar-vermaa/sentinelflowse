@@ -16,4 +16,3 @@ def test_access_token_contains_subject() -> None:
     assert payload is not None
     assert payload["sub"] == "user-123"
     assert payload["email"] == "user@example.com"
-

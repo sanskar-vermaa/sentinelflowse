@@ -16,4 +16,3 @@ def test_viewer_can_only_read_incidents() -> None:
 
     assert has_permission(membership, Permission.incident_read)
     assert not has_permission(membership, Permission.incident_assign)
-
