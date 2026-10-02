@@ -18,3 +18,9 @@ htmlcov/
 *.db
 *.tsbuildinfo
 *.egg-info/
+
+# Test artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
