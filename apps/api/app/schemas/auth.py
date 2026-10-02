@@ -12,9 +12,19 @@ class RegisterRequest(BaseModel):
     organization_name: str = Field(min_length=2, max_length=160)
 
 
+class RegisterResponse(BaseModel):
+    user_id: UUID
+    organization_id: UUID
+    role: MemberRole
+
+
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(max_length=256)
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str = Field(min_length=1, max_length=4096)
 
 
 class TokenResponse(BaseModel):
