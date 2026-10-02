@@ -1,0 +1,10 @@
+[project]
+name = "sentinelflow-worker"
+version = "1.0.0"
+description = "Background worker for SentinelFlow: executes queued workflow runs."
+requires-python = ">=3.11"
+dependencies = ["sentinelflow-api"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "../api"]
+testpaths = ["tests"]
