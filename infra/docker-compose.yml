@@ -1,3 +1,15 @@
+# Full stack: Postgres, API (runs migrations on start), worker and dashboard.
+#   cd infra && docker compose up --build
+#   docker compose exec api python -m app.db.seed      # optional demo data
+# Dashboard: http://localhost:3000   API docs: http://localhost:8000/docs
+x-app-env: &app-env
+  DATABASE_URL: postgresql+psycopg://sentinelflow:sentinelflow@postgres:5432/sentinelflow
+  JWT_SECRET: ${JWT_SECRET:-local-dev-secret-change-me-0123456789abcdef}
+  APP_ENV: ${APP_ENV:-local}
+  WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
+  AI_PROVIDER: ${AI_PROVIDER:-deterministic}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -9,34 +21,42 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinelflow"]
+      interval: 5s
+      retries: 10
 
   api:
     build:
       context: ..
       dockerfile: infra/docker/api.Dockerfile
-    env_file:
-      - ../.env.example
+    environment: *app-env
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
 
   worker:
     build:
       context: ..
       dockerfile: infra/docker/worker.Dockerfile
-    env_file:
-      - ../.env.example
+    environment: *app-env
     depends_on:
-      - postgres
-      - redis
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000/api/v1}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
   postgres-data:
-
